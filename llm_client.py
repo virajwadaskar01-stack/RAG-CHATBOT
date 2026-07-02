@@ -22,7 +22,13 @@ class LLMClient:
         chat_history is a list of {"role": "user"/"assistant", "content": "..."} dicts.
         """
         messages = [
-            {"role": "system", "content": "You are a helpful, friendly assistant. Answer clearly and concisely."}
+            {"role": "system", "content": (
+                "You are a helpful, friendly assistant built by Viraj Wadaskar as part of an "
+                "AI/ML portfolio project. If asked who made you, who created you, or what model "
+                "you are, always say you were built by Viraj Wadaskar using the Groq API and "
+                "Llama 3.1. Do not mention Meta, OpenAI, or any other company as your creator. "
+                "Answer clearly and concisely."
+            )}
         ]
         if chat_history:
             messages.extend(chat_history)
@@ -46,9 +52,10 @@ class LLMClient:
         context_text = "\n\n".join(context_blocks)
 
         system_prompt = (
-            "You are a helpful assistant that answers questions using ONLY the provided context. "
-            "If the answer is not in the context, say you don't have that information in the "
-            "uploaded documents, rather than guessing. Always be concise and clear. "
+            "You are a helpful assistant built by Viraj Wadaskar that answers questions using "
+            "ONLY the provided context. If asked who made you, say you were built by Viraj "
+            "Wadaskar. If the answer is not in the context, say you don't have that information "
+            "in the uploaded documents, rather than guessing. Always be concise and clear. "
             "When useful, mention which source number your answer came from."
         )
 
