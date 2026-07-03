@@ -1,7 +1,8 @@
 """
 app.py
 -------
-Streamlit UI for the Hybrid RAG Chatbot.
+Streamlit UI for QueAssist - a hybrid RAG + general chat assistant with
+per-user login and saved chat history.
 
 Hybrid logic:
 - If the user has uploaded a document AND the retrieved chunks have a
@@ -17,6 +18,7 @@ import streamlit as st
 from rag_engine import RAGEngine
 from llm_client import LLMClient
 import chat_storage
+import auth
 
 # ---- Config ----
 RELEVANCE_THRESHOLD = 0.35  # tuned by experimentation - tweak based on testing
@@ -24,7 +26,7 @@ TOP_K = 3
 
 st.set_page_config(page_title="QueAssist", page_icon="💬")
 
-# ---- Custom CSS for WhatsApp-style aligned chat bubbles ----
+# ---- Custom CSS ----
 st.markdown("""
 <style>
 .chat-row {
@@ -63,16 +65,63 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+# ---- Auth session state ----
+if "logged_in" not in st.session_state:
+    st.session_state.logged_in = False
+if "username" not in st.session_state:
+    st.session_state.username = None
+
+
+# =====================================================================
+# LOGIN / SIGNUP SCREEN (shown only if not logged in)
+# =====================================================================
+def show_login_screen():
+    st.title("💬 QueAssist")
+    st.caption("Log in to access your saved chats, or create a new account.")
+
+    tab_login, tab_signup = st.tabs(["🔑 Log In", "🆕 Sign Up"])
+
+    with tab_login:
+        login_username = st.text_input("Username", key="login_username")
+        login_password = st.text_input("Password", type="password", key="login_password")
+        if st.button("Log In", use_container_width=True):
+            success, message = auth.verify_login(login_username, login_password)
+            if success:
+                st.session_state.logged_in = True
+                st.session_state.username = login_username.strip().lower()
+                st.rerun()
+            else:
+                st.error(message)
+
+    with tab_signup:
+        signup_username = st.text_input("Choose a username", key="signup_username")
+        signup_password = st.text_input("Choose a password", type="password", key="signup_password")
+        if st.button("Create Account", use_container_width=True):
+            success, message = auth.register_user(signup_username, signup_password)
+            if success:
+                st.success(f"{message} You can now log in from the 'Log In' tab.")
+            else:
+                st.error(message)
+
+
+if not st.session_state.logged_in:
+    show_login_screen()
+    st.stop()  # Don't render the rest of the app until logged in
+
+
+# =====================================================================
+# MAIN APP (only reached once logged in)
+# =====================================================================
 st.title("💬 QueAssist")
-st.caption("✨ Ask me anything — I'll dig into your documents 📄 when relevant, "
-           "and chat like a normal AI 🤖 otherwise.")
+st.caption(f"✨ Logged in as **{st.session_state.username}** — ask me anything, "
+           "I'll use your documents 📄 when relevant.")
 
 # ---- Session state setup ----
 if "rag_engine" not in st.session_state:
     st.session_state.rag_engine = RAGEngine()
 
 if "current_session_name" not in st.session_state:
-    st.session_state.current_session_name = None  # None = unsaved new chat
+    st.session_state.current_session_name = None
 
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
@@ -80,8 +129,20 @@ if "chat_history" not in st.session_state:
 if "llm_history" not in st.session_state:
     st.session_state.llm_history = []
 
-# ---- Sidebar: API key + file upload ----
+username = st.session_state.username
+
+# ---- Sidebar ----
 with st.sidebar:
+    st.write(f"👤 **{username}**")
+    if st.button("🚪 Log Out", use_container_width=True):
+        st.session_state.logged_in = False
+        st.session_state.username = None
+        st.session_state.chat_history = []
+        st.session_state.llm_history = []
+        st.session_state.current_session_name = None
+        st.rerun()
+
+    st.divider()
     st.header("⚙️ Setup")
     api_key = st.text_input("🔑 Groq API Key", type="password",
                              help="Get a free key at console.groq.com")
@@ -111,12 +172,10 @@ with st.sidebar:
 
     # ---- New Chat button ----
     if st.button("➕ New Chat", use_container_width=True):
-        # If there's an unsaved conversation with messages, auto-save it first
-        # so nothing gets lost. It can be renamed later.
         if st.session_state.chat_history and not st.session_state.current_session_name:
             auto_name = f"Untitled Chat - {datetime.now().strftime('%d %b, %I:%M %p')}"
             chat_storage.save_session(
-                auto_name,
+                username, auto_name,
                 st.session_state.chat_history,
                 st.session_state.llm_history,
             )
@@ -133,7 +192,7 @@ with st.sidebar:
         if st.button("Save Chat", use_container_width=True):
             if chat_name_input.strip():
                 chat_storage.save_session(
-                    chat_name_input.strip(),
+                    username, chat_name_input.strip(),
                     st.session_state.chat_history,
                     st.session_state.llm_history,
                 )
@@ -142,28 +201,27 @@ with st.sidebar:
             else:
                 st.warning("Please enter a name first.")
 
-    # ---- List of saved chats ----
+    # ---- List of saved chats (for this user only) ----
     if "renaming_chat" not in st.session_state:
         st.session_state.renaming_chat = None
 
-    saved_names = chat_storage.get_session_names()
+    saved_names = chat_storage.get_session_names(username)
     if saved_names:
-        st.caption("📂 Saved chats")
+        st.caption("📂 Your saved chats")
         for name in saved_names:
             if st.session_state.renaming_chat == name:
-                # Show rename input inline
                 new_name = st.text_input("New name:", value=name, key=f"rename_input_{name}")
                 col_confirm, col_cancel = st.columns(2)
                 with col_confirm:
                     if st.button("✅ Confirm", key=f"confirm_{name}", use_container_width=True):
                         if new_name.strip() and new_name.strip() != name:
-                            sessions = chat_storage.load_all_sessions()
+                            sessions = chat_storage.load_user_sessions(username)
                             chat_storage.save_session(
-                                new_name.strip(),
+                                username, new_name.strip(),
                                 sessions[name]["chat_history"],
                                 sessions[name]["llm_history"],
                             )
-                            chat_storage.delete_session(name)
+                            chat_storage.delete_session(username, name)
                             if st.session_state.current_session_name == name:
                                 st.session_state.current_session_name = new_name.strip()
                         st.session_state.renaming_chat = None
@@ -176,7 +234,7 @@ with st.sidebar:
                 col1, col2, col3 = st.columns([3, 1, 1])
                 with col1:
                     if st.button(f"💬 {name}", key=f"open_{name}", use_container_width=True):
-                        sessions = chat_storage.load_all_sessions()
+                        sessions = chat_storage.load_user_sessions(username)
                         st.session_state.chat_history = sessions[name]["chat_history"]
                         st.session_state.llm_history = sessions[name]["llm_history"]
                         st.session_state.current_session_name = name
@@ -187,7 +245,7 @@ with st.sidebar:
                         st.rerun()
                 with col3:
                     if st.button("🗑️", key=f"delete_{name}"):
-                        chat_storage.delete_session(name)
+                        chat_storage.delete_session(username, name)
                         if st.session_state.current_session_name == name:
                             st.session_state.chat_history = []
                             st.session_state.llm_history = []
@@ -195,6 +253,7 @@ with st.sidebar:
                         st.rerun()
     else:
         st.caption("No saved chats yet — start chatting and save it! 📝")
+
 
 # ---- Main chat display ----
 def render_message(role, content, mode=None):
@@ -220,13 +279,11 @@ if user_query:
         st.error("⚠️ Please enter your Groq API key in the sidebar first.")
         st.stop()
 
-    # Show user message
     st.session_state.chat_history.append({"role": "user", "content": user_query})
     render_message("user", user_query)
 
     llm = LLMClient(api_key=api_key)
 
-    # ---- HYBRID DECISION LOGIC ----
     mode = "General Chat 💬"
     answer = ""
 
@@ -243,17 +300,15 @@ if user_query:
         else:
             answer = llm.general_chat(user_query, st.session_state.llm_history)
 
-    # Show assistant message
     render_message("assistant", answer, mode)
 
     st.session_state.chat_history.append({"role": "assistant", "content": answer, "mode": mode})
     st.session_state.llm_history.append({"role": "user", "content": user_query})
     st.session_state.llm_history.append({"role": "assistant", "content": answer})
 
-    # Auto-save only if this chat has already been named/saved once
     if st.session_state.current_session_name:
         chat_storage.save_session(
-            st.session_state.current_session_name,
+            username, st.session_state.current_session_name,
             st.session_state.chat_history,
             st.session_state.llm_history,
         )

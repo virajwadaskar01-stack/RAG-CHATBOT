@@ -55,5 +55,30 @@
         "content": "So, you are Viraj Wadaskar, the creator of me. I'm designed to assist and provide information to you, and I appreciate the opportunity to work with you on this AI/ML portfolio project."
       }
     ]
+  },
+  "viraj wadaskar": {
+    "HI": {
+      "chat_history": [
+        {
+          "role": "user",
+          "content": "HEY WHO ARE YOU\n"
+        },
+        {
+          "role": "assistant",
+          "content": "Hello, I'm an AI assistant. I was built by Viraj Wadaskar using the Groq API and Llama 3.1. I'm here to help answer your questions and provide information on a wide range of topics. How can I assist you today?",
+          "mode": "General Chat 💬"
+        }
+      ],
+      "llm_history": [
+        {
+          "role": "user",
+          "content": "HEY WHO ARE YOU\n"
+        },
+        {
+          "role": "assistant",
+          "content": "Hello, I'm an AI assistant. I was built by Viraj Wadaskar using the Groq API and Llama 3.1. I'm here to help answer your questions and provide information on a wide range of topics. How can I assist you today?"
+        }
+      ]
+    }
   }
 }

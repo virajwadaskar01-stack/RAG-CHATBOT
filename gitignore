@@ -17,4 +17,5 @@ Thumbs.db
 
 # Chat history (personal data - never commit)
 chat_sessions.json
+users.json
 
