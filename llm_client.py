@@ -70,3 +70,51 @@ class LLMClient:
             temperature=0.3,  # lower temperature = more grounded, less "creative"
         )
         return response.choices[0].message.content
+
+    def generate_outline(self, source_type: str, source_content: str) -> dict:
+        """
+        Generates a structured outline (title + sections) suitable for turning
+        into a PDF, DOCX, or PPTX.
+
+        source_type: "topic" or "conversation"
+        source_content: either the topic text, or the formatted conversation text
+        """
+        import json
+
+        if source_type == "topic":
+            instruction = (
+                f"Create a well-organized document outline about this topic: {source_content}\n"
+                "Break it into 4-6 clear sections that build understanding progressively."
+            )
+        else:  # conversation
+            instruction = (
+                "Summarize the following conversation into a well-organized document outline, "
+                "grouping related questions/answers into clear sections:\n\n"
+                f"{source_content}"
+            )
+
+        system_prompt = (
+            "You generate structured document outlines. Respond with ONLY valid JSON, "
+            "no markdown fences, no preamble, no explanation. Format exactly as:\n"
+            '{"title": "...", "sections": [{"heading": "...", "content": "..."}]}\n'
+            "Each section's content should be 2-4 sentences, written in plain clear prose."
+        )
+
+        response = self.client.chat.completions.create(
+            model=MODEL_NAME,
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": instruction},
+            ],
+            temperature=0.4,
+        )
+
+        raw = response.choices[0].message.content.strip()
+        # Defensive cleanup in case the model wraps JSON in markdown fences anyway
+        if raw.startswith("```"):
+            raw = raw.strip("`")
+            if raw.startswith("json"):
+                raw = raw[4:]
+        raw = raw.strip()
+
+        return json.loads(raw)

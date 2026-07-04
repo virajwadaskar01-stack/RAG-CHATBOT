@@ -67,6 +67,33 @@
           "role": "assistant",
           "content": "Hello, I'm an AI assistant. I was built by Viraj Wadaskar using the Groq API and Llama 3.1. I'm here to help answer your questions and provide information on a wide range of topics. How can I assist you today?",
           "mode": "General Chat 💬"
+        },
+        {
+          "role": "user",
+          "content": "WHO IS VIRAJ WADASKAR"
+        },
+        {
+          "role": "assistant",
+          "content": "I don't have information about Viraj Wadaskar outside of being my creator. He is the individual responsible for developing and training me using the Groq API and Llama 3.1. If you're interested in learning more about my capabilities or how I can assist you, I'd be happy to help.",
+          "mode": "General Chat 💬"
+        },
+        {
+          "role": "user",
+          "content": "CAN YOU GENERATE PHOTO OR PDF"
+        },
+        {
+          "role": "assistant",
+          "content": "I can generate text-based descriptions and summaries, but I don't have direct capability to generate images or PDFs. However, I can help you create text-based content that can be used as a starting point for further processing or editing in a tool like Adobe Illustrator or Photoshop to create an image, or in a PDF editor to create a PDF. If you have specific requirements or need assistance with text-based content, I'd be happy to help.",
+          "mode": "General Chat 💬"
+        },
+        {
+          "role": "user",
+          "content": "CAN YOU TELL MME SOME BEST  TOURING PLACES IN CHANDRAPUR DISTRICT"
+        },
+        {
+          "role": "assistant",
+          "content": "The Chandrapur district in Maharashtra, India has several tourist attractions. Here are a few places you might consider visiting:\n\n1. **Chandrapur Wildlife Sanctuary**: A wildlife sanctuary home to a variety of flora and fauna, including tigers, leopards, and elephants.\n2. **Balapal National Park**: A national park known for its tiger reserves and diverse wildlife.\n3. **Ambazari Lake**: A scenic lake with a scenic walkway and a temple dedicated to Lord Shiva.\n4. **Karanja Dam**: A popular picnic spot surrounded by lush greenery and a scenic lake.\n5. **Brahmdeo Tekdi**: A hilltop offering panoramic views of Chandrapur city and the surrounding landscape.\n6. **Mahatma Gandhi Museum**: A museum showcasing the life and works of Mahatma Gandhi.\n7. **Rajiv Gandhi Zoological Park**: A zoo housing a variety of animals, including elephants, tigers, and lions.\n\nThese are just a few of the many places to visit in Chandrapur district. If you have specific interests or preferences, I'd be happy to provide more tailored recommendations.",
+          "mode": "General Chat 💬"
         }
       ],
       "llm_history": [
@@ -77,6 +104,30 @@
         {
           "role": "assistant",
           "content": "Hello, I'm an AI assistant. I was built by Viraj Wadaskar using the Groq API and Llama 3.1. I'm here to help answer your questions and provide information on a wide range of topics. How can I assist you today?"
+        },
+        {
+          "role": "user",
+          "content": "WHO IS VIRAJ WADASKAR"
+        },
+        {
+          "role": "assistant",
+          "content": "I don't have information about Viraj Wadaskar outside of being my creator. He is the individual responsible for developing and training me using the Groq API and Llama 3.1. If you're interested in learning more about my capabilities or how I can assist you, I'd be happy to help."
+        },
+        {
+          "role": "user",
+          "content": "CAN YOU GENERATE PHOTO OR PDF"
+        },
+        {
+          "role": "assistant",
+          "content": "I can generate text-based descriptions and summaries, but I don't have direct capability to generate images or PDFs. However, I can help you create text-based content that can be used as a starting point for further processing or editing in a tool like Adobe Illustrator or Photoshop to create an image, or in a PDF editor to create a PDF. If you have specific requirements or need assistance with text-based content, I'd be happy to help."
+        },
+        {
+          "role": "user",
+          "content": "CAN YOU TELL MME SOME BEST  TOURING PLACES IN CHANDRAPUR DISTRICT"
+        },
+        {
+          "role": "assistant",
+          "content": "The Chandrapur district in Maharashtra, India has several tourist attractions. Here are a few places you might consider visiting:\n\n1. **Chandrapur Wildlife Sanctuary**: A wildlife sanctuary home to a variety of flora and fauna, including tigers, leopards, and elephants.\n2. **Balapal National Park**: A national park known for its tiger reserves and diverse wildlife.\n3. **Ambazari Lake**: A scenic lake with a scenic walkway and a temple dedicated to Lord Shiva.\n4. **Karanja Dam**: A popular picnic spot surrounded by lush greenery and a scenic lake.\n5. **Brahmdeo Tekdi**: A hilltop offering panoramic views of Chandrapur city and the surrounding landscape.\n6. **Mahatma Gandhi Museum**: A museum showcasing the life and works of Mahatma Gandhi.\n7. **Rajiv Gandhi Zoological Park**: A zoo housing a variety of animals, including elephants, tigers, and lions.\n\nThese are just a few of the many places to visit in Chandrapur district. If you have specific interests or preferences, I'd be happy to provide more tailored recommendations."
         }
       ]
     }
