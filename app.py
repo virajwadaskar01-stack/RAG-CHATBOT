@@ -388,6 +388,9 @@ def question_wants_images(query: str) -> bool:
     return True
 
 
+# ---- Chat input (kept at top level so it stays pinned to the bottom of the page) ----
+user_query = st.chat_input("Ask a question... 💭")
+
 # ---- Main tabs ----
 tab_chat, tab_ai_image, tab_photo, tab_video = st.tabs(
     ["💬 Chat", "🎨 AI Image Generator", "🖌️ Photo Editor", "🎬 Video Editor"]
@@ -416,9 +419,6 @@ with tab_chat:
 
     for msg in st.session_state.chat_history:
         render_message(msg["role"], msg["content"], msg.get("mode"), msg.get("images"))
-
-    # ---- Chat input ----
-    user_query = st.chat_input("Ask a question... 💭")
 
     if user_query:
         if not api_key:
