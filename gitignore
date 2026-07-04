@@ -16,6 +16,7 @@ venv/
 Thumbs.db
 
 # Chat history (personal data - never commit)
+chat_history.json
 chat_sessions.json
 users.json
 saved_keys.json
