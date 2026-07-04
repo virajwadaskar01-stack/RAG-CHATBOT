@@ -19,6 +19,7 @@ from rag_engine import RAGEngine
 from llm_client import LLMClient
 import chat_storage
 import auth
+import saved_keys
 import doc_generator
 import image_search
 import ai_image_gen
@@ -172,7 +173,10 @@ with st.sidebar:
 
     st.divider()
     st.header("⚙️ Setup")
+
+    _saved = saved_keys.load_keys()
     api_key = st.text_input("🔑 Groq API Key", type="password",
+                             value=_saved.get("groq_api_key", ""),
                              help="Get a free key at console.groq.com")
 
     st.divider()
@@ -180,8 +184,13 @@ with st.sidebar:
     st.caption("Photos are added automatically when they'd help answer your question.")
     unsplash_key = st.text_input(
         "Unsplash API Key", type="password",
+        value=_saved.get("unsplash_api_key", ""),
         help="Get a free key at unsplash.com/developers"
     )
+
+    # Auto-save keys locally so they don't need to be re-entered next time
+    if api_key != _saved.get("groq_api_key", "") or unsplash_key != _saved.get("unsplash_api_key", ""):
+        saved_keys.save_keys(api_key, unsplash_key)
 
     st.divider()
     st.header("📄 Upload Documents")
