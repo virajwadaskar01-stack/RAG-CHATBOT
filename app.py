@@ -374,18 +374,33 @@ VISUAL_KEYWORDS = [
 SKIP_KEYWORDS = [
     "code", "function", "error", "debug", "syntax", "calculate", "formula",
     "equation", "write a", "explain the concept",
+    # Meta/conversational questions about the bot itself - never visual
+    "who made you", "who created you", "who built you", "who are you",
+    "what is your name", "what's your name", "how are you", "who is your creator",
+    "what can you do", "help me with", "thank you", "thanks",
 ]
+GREETINGS = ["hi", "hello", "hey", "hii", "hola", "yo"]
+INFO_PATTERNS = ["tell me about", "what is", "where is", "explain"]
 
 
 def question_wants_images(query: str) -> bool:
-    q = query.lower()
+    q = query.lower().strip()
+
+    if q.rstrip("!.?") in GREETINGS:
+        return False
+
     if any(skip in q for skip in SKIP_KEYWORDS):
         return False
+
     if any(kw in q for kw in VISUAL_KEYWORDS):
         return True
-    # Default heuristic: places, people, animals, objects, events often benefit
-    # from a visual, so allow it unless it looks like a technical/code question.
-    return True
+
+    # Only trigger for informational questions about a concrete topic -
+    # everything else (conversational, meta, opinions) stays text-only.
+    if any(q.startswith(p) or f" {p} " in q for p in INFO_PATTERNS):
+        return True
+
+    return False
 
 
 # ---- Chat input (kept at top level so it stays pinned to the bottom of the page) ----
