@@ -1,12 +1,23 @@
+# ============================================
+# IMPORTANT: Personal data & secrets - NEVER commit these
+# ============================================
+chat_history.json
+chat_sessions.json
+users.json
+saved_keys.json
+
 # Environment / secrets
 .env
+.venv
+env/
+venv/
+ENV/
 *.key
 
-# Python
+# Byte-compiled / optimized files
 __pycache__/
-*.pyc
-.venv/
-venv/
+*.py[cod]
+*$py.class
 
 # Streamlit
 .streamlit/secrets.toml
@@ -15,9 +26,14 @@ venv/
 .DS_Store
 Thumbs.db
 
-# Chat history (personal data - never commit)
-chat_history.json
-chat_sessions.json
-users.json
-saved_keys.json
+# Jupyter
+.ipynb_checkpoints
 
+# PyCharm / editors
+.idea/
+.vscode/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
