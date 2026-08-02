@@ -13,10 +13,14 @@ import requests
 UNSPLASH_SEARCH_URL = "https://api.unsplash.com/search/photos"
 
 
-def search_images(query: str, api_key: str, count: int = 3) -> list:
+def search_images(query: str, api_key: str, count: int = 3, page: int = 1) -> list:
     """
     Returns a list of dicts: [{"url": ..., "credit": ..., "credit_link": ...}, ...]
     Returns an empty list if the request fails or no key is provided.
+
+    `page` lets the caller fetch a different batch of results for the same
+    query - useful for "show me more photos" style follow-ups, since Unsplash
+    otherwise returns the identical top results every time for the same query.
     """
     if not api_key or not query.strip():
         return []
@@ -24,7 +28,7 @@ def search_images(query: str, api_key: str, count: int = 3) -> list:
     try:
         response = requests.get(
             UNSPLASH_SEARCH_URL,
-            params={"query": query, "per_page": count},
+            params={"query": query, "per_page": count, "page": page},
             headers={"Authorization": f"Client-ID {api_key}"},
             timeout=8,
         )
