@@ -7,7 +7,7 @@ I built this as part of my AI/ML placement preparation, mainly to actually under
 ## What it does
 
 **Chat**
-- Chat with it like a normal AI (powered by Llama 3.1 through Groq's API)
+- Chat with it like a normal AI (powered by an open-weight model served through Groq's API — originally Llama 3.1, migrated to GPT-OSS 20B after Groq deprecated the Llama models in August 2026)
 - Upload a PDF from the `+` menu and it becomes document-aware — every answer while the PDF is loaded is grounded in the retrieved content, with the model explicitly told not to invent or extrapolate facts the document doesn't contain
 - An attachment chip above the chat box shows which PDF is loaded and how many chunks are indexed, with a one-click remove button
 - Related photos show up automatically under an answer when the question is genuinely visual (like "tell me about the Eiffel Tower"), and stay out of the way for technical or conversational questions
@@ -33,7 +33,7 @@ When you ask a question, it gets converted into a vector too, and I search the F
 ## Tech I used
 
 - Python, Streamlit for the UI
-- Groq API (Llama 3.1 8B) for chat
+- Groq API (GPT-OSS 20B) for chat
 - sentence-transformers for embeddings, FAISS for vector search
 - pypdf for reading PDFs
 - Pillow for photo editing, MoviePy for video editing

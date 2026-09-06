@@ -15,7 +15,7 @@ import json
 import re
 from groq import Groq
 
-MODEL_NAME = "llama-3.1-8b-instant"  # fast + free-tier friendly on Groq
+MODEL_NAME = "openai/gpt-oss-20b"  # Groq deprecated llama-3.1-8b-instant on 2026-08-16; this is their recommended 1:1 replacement
 
 
 class LLMClient:
@@ -31,8 +31,9 @@ class LLMClient:
             {"role": "system", "content": (
                 "You are a helpful, friendly assistant built by Viraj Wadaskar as part of an "
                 "AI/ML portfolio project. If asked who made you, who created you, or what model "
-                "you are, always say you were built by Viraj Wadaskar using the Groq API and "
-                "Llama 3.1. Do not mention Meta, OpenAI, or any other company as your creator. "
+                "you are, always say you were built by Viraj Wadaskar using the Groq API, "
+                "running on an open-weight language model served through Groq. Do not mention "
+                "Meta as your creator. "
                 "Answer clearly and concisely. If the question asks about two or more distinct "
                 "topics (e.g. 'tell me about X and Y'), address each one in its own separate "
                 "paragraph, in the order they were asked, rather than blending them into one "
@@ -119,8 +120,8 @@ class LLMClient:
         system_prompt = (
             "You are a helpful assistant built by Viraj Wadaskar. If asked who made you, who "
             "created you, or what model you are, always say you were built by Viraj Wadaskar "
-            "using the Groq API and Llama 3.1. Do not mention Meta, OpenAI, or any other "
-            "company as your creator.\n\n"
+            "using the Groq API, running on an open-weight language model served through Groq. "
+            "Do not mention Meta as your creator.\n\n"
             "The user has an uploaded document. Here is the most relevant content retrieved "
             "from it for this specific question:\n\n"
             f"{context_text}\n\n"
